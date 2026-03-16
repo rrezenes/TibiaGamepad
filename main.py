@@ -327,7 +327,6 @@ if __name__ == "__main__":
             time.sleep(0.001)
             
     threading.Thread(target=mouse_runner, daemon=True).start()
-    # AQUI ESTÁ A THREAD QUE EU TINHA ESQUECIDO:
     threading.Thread(target=movement_loop, daemon=True).start()
     
     TibiaGamepadGUI().mainloop()
