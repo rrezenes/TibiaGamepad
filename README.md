@@ -1,7 +1,7 @@
 TibiaGamepad 🎮
 ===============
 
-O **TibiaGamepad** é um emulador de comando de alto desempenho desenvolvido especificamente para o Tibia. Utiliza o driver **Interception** para emular entradas de teclado e rato a nível de hardware (HID), permitindo uma experiência de jogo fluida, segura e altamente responsiva através de um comando de Xbox ou compatível.
+O **TibiaGamepad** é um emulador de comando de alto desempenho desenvolvido especificamente para o Tibia. Utiliza o driver **Interception** para emular entradas de teclado e mouse a nível de hardware (HID), permitindo uma experiência de jogo fluida, segura e altamente responsiva através de um comando de Xbox ou compatível.
 
 🚀 Principais Funcionalidades
 -----------------------------
@@ -69,7 +69,7 @@ Este projeto não funciona sem o driver Interception instalado no sistema.
 
 | **Analógico Esquerdo** | Movimentação | Mapeado para W, A, S, D |
 
-| **Analógico Direito** | Movimentação do Rato | Processamento relativo a 1000Hz |
+| **Analógico Direito** | Movimentação do mouse | Processamento relativo a 1000Hz |
 
 | **L3 (Pressionar Esq.)** | Atalho Especial | Executa Alt + Q (via press\_combo) |
 
@@ -86,9 +86,10 @@ Este projeto não funciona sem o driver Interception instalado no sistema.
 🔧 Personalização
 -----------------
 
-Para alterar a sensibilidade do rato ou os mapeamentos, edite as constantes no topo do ficheiro main.py:
+Para alterar a sensibilidade do mouse ou os mapeamentos, edite as constantes no topo do ficheiro main.py:
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`# Sensibilidade do analógico direito  MOUSE_SENSITIVITY = 5   # Zona morta para evitar drift do analógico  DEADZONE = 0.15` 
+`# Sensibilidade do analógico direito  MOUSE_SENSITIVITY = 5`
+`# Zona morta para evitar drift do analógico  DEADZONE = 0.15` 
 
 ⚠️ Resolução de Problemas
 -------------------------
