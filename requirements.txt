@@ -1,0 +1,6 @@
+interception-python
+XInput-Python
+numpy
+scipy
+pyautogui
+ctypes
