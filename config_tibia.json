@@ -1,0 +1,71 @@
+{
+    "mouse_sensitivity": 5,
+    "deadzone_stick": 0.4,
+    "mouse_stick": "RIGHT",
+    "mapping": {
+        "A": [
+            "",
+            "f2"
+        ],
+        "B": [
+            "",
+            "f3"
+        ],
+        "X": [
+            "",
+            "f4"
+        ],
+        "Y": [
+            "",
+            "f1"
+        ],
+        "LB": [
+            "",
+            "f5"
+        ],
+        "RB": [
+            "",
+            "f6"
+        ],
+        "LT": [
+            "SHIFT",
+            "f7"
+        ],
+        "RT": [
+            "CTRL",
+            "f8"
+        ],
+        "BACK": [
+            "",
+            "MOUSE_RIGHT"
+        ],
+        "START": [
+            "ctrl",
+            "q"
+        ],
+        "UP": [
+            "ctrl",
+            "w"
+        ],
+        "DOWN": [
+            "ctrl",
+            "s"
+        ],
+        "LEFT": [
+            "ctrl",
+            "a"
+        ],
+        "RIGHT": [
+            "ctrl",
+            "d"
+        ],
+        "L3": [
+            "ALT",
+            "MOUSE_LEFT"
+        ],
+        "R3": [
+            "",
+            "MOUSE_RIGHT"
+        ]
+    }
+}
