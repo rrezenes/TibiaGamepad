@@ -1,107 +1,71 @@
-TibiaGamepad 🎮
-===============
+# 🎮 TibiaGamepad
 
-O **TibiaGamepad** é um emulador de comando de alto desempenho desenvolvido especificamente para o Tibia. Utiliza o driver **Interception** para emular entradas de teclado e mouse a nível de hardware (HID), permitindo uma experiência de jogo fluida, segura e altamente responsiva através de um comando de Xbox ou compatível.
+O **TibiaGamepad** é um emulador de entrada de baixo nível projetado especificamente para permitir que jogadores de Tibia utilizem controles de Xbox (ou compatíveis com XInput) para movimentação e execução de hotkeys. 
 
-🚀 Principais Funcionalidades
------------------------------
+Diferente de emuladores comuns, ele utiliza o driver **Interception**, o que garante que as entradas sejam reconhecidas pelo jogo mesmo em modo BattleEye, simulando um teclado/mouse físico real.
 
-*   **Thread de Movimento 1000Hz**: Uma thread dedicada que processa a entrada do analógico direito a cada 1ms, eliminando "saltos" e garantindo uma precisão de câmara absoluta.
-    
-*   **Emulação Low-Level**: Ao utilizar o driver Interception, os comandos são injetados diretamente na stack de entrada do Windows, sendo vistos pelo sistema como um hardware real.
-    
-*   **Macros Turbo Inteligentes**: O D-Pad está configurado com macros turbo (Repetição rápida de Direção + CTRL) para facilitar a movimentação em situações de combate.
-    
-*   **Métodos Genéricos de Combos**: Sistema robusto para execução de combinações de teclas (ex: Alt + Q) com tempos de pressão (delays) ajustáveis para garantir o registo no jogo.
-    
-*   **Segurança**: Inclui verificação automática de privilégios de Administrador, necessária para a comunicação com o driver.
-    
+---
 
-🛠️ Pré-requisitos
-------------------
+## ✨ Funcionalidades Principais
 
-### 1\. Driver Interception (Obrigatório)
+* **Movimentação Heartbeat (Restaurada)**: Lógica de repetição forçada (30ms) que garante que o personagem continue andando suavemente e sem interrupções enquanto o analógico estiver pressionado.
+* **Mapeamento Híbrido**: Suporte total a teclas de teclado, combinações com modificadores (Ctrl, Alt, Shift) e botões do mouse (Esquerdo, Direito e Central).
+* **Captura Inteligente**: Clique no campo para capturar a tecla ou o botão do mouse instantaneamente. Use `Backspace` ou o botão `X` para limpar.
+* **Auto-Admin**: O programa agora solicita automaticamente os privilégios de Administrador ao ser aberto, requisito obrigatório para o driver funcionar.
+* **UI Auto-Sync**: O perfil salvo (`config_tibia.json`) é carregado e exibido automaticamente na interface assim que o programa é iniciado.
+* **Console de Logs Otimizado**: Visualize em tempo real a pressão dos analógicos (com trava de 0.5s para não travar o emulador), gatilhos e o status das hotkeys disparadas.
 
-Este projeto não funciona sem o driver Interception instalado no sistema.
+---
 
-1.  Transfira o driver do repositório oficial: [Interception Releases](https://www.google.com/search?q=https://github.com/oblitum/Interception/releases/latest).
-    
-2.  Extraia o conteúdo.
-    
-3.  Abra o **Prompt de Comando (CMD)** como **Administrador**.
-    
-4.  Navegue até à pasta command line installer dentro dos ficheiros extraídos.
-    
-5.  install-interception.exe /install
-    
-6.  **Reinicie o seu computador** para que o driver seja carregado.
-    
+## 🛠️ Requisitos de Instalação
 
-### 2\. Ambiente Python
+### 1. Driver Interception (Obrigatório)
+Para que o código funcione, você deve instalar o driver que permite a emulação de hardware de baixo nível:
+1. Baixe o Interception Driver no GitHub oficial.
+2. Abra o terminal como Administrador na pasta "command line installer".
+3. Execute: `install-interception.exe /install`.
+4. **REINICIE o seu computador.**
 
-*   Python 3.10 ou superior.
-    
+### 2. Dependências do Python
+Instale as bibliotecas necessárias via pip:
+- `pip install interception`
+- `pip install XInput`
+- `pip install customtkinter`
+- `pip install pynput`
 
-📦 Instalação e Configuração
-----------------------------
+---
 
-1.  git clone \[https://github.com/seu-usuario/TibiaGamepad.git\](https://github.com/seu-usuario/TibiaGamepad.git)cd TibiaGamepad
-    
-2.  pip install -r requirements.txt
-    
+## 🚀 Como Usar
 
-🎮 Como Utilizar
-----------------
+1. **Executar**: Inicie o `main.py` (ou o executável gerado). Ele pedirá permissão de Administrador automaticamente.
+2. **Mapeamento**:
+    * Clique na aba **Mapeamento**.
+    * Clique uma vez no campo desejado (ele ficará vermelho indicando modo de escuta).
+    * Pressione uma tecla no teclado ou clique com o botão do mouse (Esquerdo/Direito/Meio) no campo para salvar.
+3. **Ativação**:
+    * Na aba **Geral**, clique em **ATIVAR EMULADOR**.
+    * O status mudará para vermelho e o log confirmará a ativação. O analógico e os botões já estarão funcionando no jogo.
 
-1.  Ligue o seu controle no PC.
-    
-2.  Certifique-se de que o terminal (VS Code, CMD ou PowerShell) está aberto como **Administrador**.
-    
-3.  python main.py
-    
-4.  O terminal deverá exibir a mensagem TibiaGamepad Ativo!.
-    
+---
 
-⌨️ Mapeamento de Controlos
---------------------------
+## 📖 Estrutura da Interface
 
-| **Comando no Comando** | **Ação no Tibia** | **Detalhes Técnicos** |
+| Aba | Descrição |
+| :--- | :--- |
+| **Geral** | Ativação do emulador, escolha do analógico de movimento do mouse e ajuste de sensibilidade. |
+| **Mapeamento** | Configuração de todos os botões físicos para Hotkeys ou Cliques de Mouse. |
+| **Logs** | Depuração em tempo real de movimentos, pressão de botões, salvamentos e erros. |
 
-| **Analógico Esquerdo** | Movimentação | Mapeado para W, A, S, D |
+---
 
-| **Analógico Direito** | Movimentação do mouse | Processamento relativo a 1000Hz |
+## 💻 Compilando para Executável (.exe)
 
-| **L3 (Pressionar Esq.)** | Atalho Especial | Executa Alt + Q (via press\_combo) |
+Se você deseja gerar um arquivo único para rodar sem precisar do Python aberto no terminal, instale o PyInstaller (`pip install pyinstaller`) e execute o comando abaixo:
 
-| **R3 (Pressionar Dir.)** | Clique Esquerdo | Injeção via Interception |
+```bash
+pyinstaller --noconsole --onefile --uac-admin --name "TibiaGamepad_v1.1.7" main.py
+```
+---
 
-| **Botão Back (Select)** | Clique Direito | Injeção via Interception |
-
-| **D-Pad (Direcionais)** | Macros Turbo | Direção + L-CTRL em loop |
-
-| **Botões A, B, X, Y** | Hotkeys F1-F4 | Pressionar rápido |
-
-| **Bumpers (L1/R1)** | Hotkeys F5-F6 | Pressionar rápido |
-
-🔧 Personalização
------------------
-
-Para alterar a sensibilidade do mouse ou os mapeamentos, edite as constantes no topo do ficheiro main.py:
-
-`# Sensibilidade do analógico direito  MOUSE_SENSITIVITY = 5`
-`# Zona morta para evitar drift do analógico  DEADZONE = 0.15` 
-
-⚠️ Resolução de Problemas
--------------------------
-
-*   **O mouse não se move**: Verifique se instalou o driver Interception e se reiniciou o PC.
-    
-*   **Erro de Administrador**: O script requer acesso direto ao hardware; clique com o botão direito no seu terminal e escolha "Executar como Administrador".
-    
-*   **Comando não detetado**: Verifique se o comando é reconhecido pelo Windows como um dispositivo XInput (Xbox 360/One/Series).
-    
-
-📄 Licença
-----------
-
-Este projeto está licenciado sob a licença MIT - consulte o ficheiro [LICENSE](https://www.google.com/search?q=LICENSE) para mais detalhes.
+## ⚠️ Aviso Legal
+Este software é uma ferramenta de acessibilidade e conveniência. O uso de emuladores e macros pode estar sujeito às regras dos termos de serviço do jogo. Use com responsabilidade.
