@@ -51,6 +51,7 @@ private:
     void setupButtonsTab(QWidget* tab);
     void setupLogsTab(QWidget* tab);
     void finishCapture(const QString& keyName);
+    void cancelCapture();
 
     QTabWidget* tabView;
     QPushButton* statusBtn;
@@ -64,6 +65,7 @@ private:
     QMap<QString, QPair<ClickableLineEdit*, ClickableLineEdit*>> entryWidgets;
 
     bool capturing = false;
+    bool justStarted = false;
     QString currentBtn;
     int currentIndex = -1;
     ClickableLineEdit* currentEntryWidget = nullptr;

@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include <QtGlobal>
 #include "Config.h"
 #include "ActionExecutor.h"
 #include "GamepadHandler.h"
@@ -15,7 +16,9 @@
 #include <QFrame>
 #include <iostream>
 
-ClickableLineEdit::ClickableLineEdit(QWidget* parent) : QLineEdit(parent) {}
+ClickableLineEdit::ClickableLineEdit(QWidget* parent) : QLineEdit(parent) {
+    setContextMenuPolicy(Qt::NoContextMenu);
+}
 
 void ClickableLineEdit::mousePressEvent(QMouseEvent* event) {
     emit clicked(event);
@@ -23,7 +26,7 @@ void ClickableLineEdit::mousePressEvent(QMouseEvent* event) {
 }
 
 MainWindow::MainWindow(QWidget* parent) : QWidget(parent) {
-    setWindowTitle("TibiaGamepad v1.1.7 (C++)");
+    setWindowTitle("TibiaGamepad");
     resize(680, 750);
     
     setStyleSheet(R"(
@@ -33,8 +36,9 @@ MainWindow::MainWindow(QWidget* parent) : QWidget(parent) {
         QTabBar::tab { background: #333; color: #ccc; padding: 8px 30px; margin: 2px; border-radius: 4px; }
         QTabBar::tab:selected { background: #1f538d; color: white; }
         QPushButton { border-radius: 6px; color: white; }
-        QLineEdit { background-color: #404244; border: 1px solid #777; border-radius: 4px; padding: 5px; color: white; font-weight: bold; }
-        QLineEdit:focus { border: 1px solid #1f538d; background-color: #4a4c4e; }
+        QLineEdit { background-color: #383a3c; border: 1px solid #555; border-radius: 6px; padding: 6px; color: #eee; font-weight: bold; font-size: 11px; }
+        QLineEdit:focus { border: 1px solid #1f538d; background-color: #404244; }
+        QLineEdit:hover { border: 1px solid #777; }
     )");
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -206,11 +210,17 @@ void MainWindow::setupButtonsTab(QWidget* tab) {
     QStringList botoes = {"A", "B", "X", "Y", "LB", "RB", "LT", "RT", "BACK", "START", "UP", "DOWN", "LEFT", "RIGHT", "L3", "R3"};
     for (const QString& btn : botoes) {
         QHBoxLayout* rowLayout = new QHBoxLayout();
-        QLabel* lblBtn = new QLabel(btn); lblBtn->setFixedWidth(80); lblBtn->setFont(QFont("Arial", 12, QFont::Bold));
-        ClickableLineEdit* valMod = new ClickableLineEdit(); valMod->setFixedWidth(130); valMod->setReadOnly(true); valMod->setAlignment(Qt::AlignCenter);
-        ClickableLineEdit* valKey = new ClickableLineEdit(); valKey->setMinimumWidth(160); valKey->setReadOnly(true); valKey->setAlignment(Qt::AlignCenter);
-        QPushButton* clearBtn = new QPushButton("X"); clearBtn->setFixedSize(25, 25); clearBtn->setStyleSheet("QPushButton { background-color: #444; border-radius: 12px; } QPushButton:hover { background-color: red; }");
-        rowLayout->addWidget(lblBtn); rowLayout->addWidget(valMod); rowLayout->addWidget(valKey); rowLayout->addWidget(clearBtn);
+        rowLayout->setContentsMargins(10, 2, 10, 2);
+        QLabel* lblBtn = new QLabel(btn); lblBtn->setFixedWidth(90); lblBtn->setFont(QFont("Arial", 11, QFont::Bold));
+        ClickableLineEdit* valMod = new ClickableLineEdit(); valMod->setFixedWidth(140); valMod->setReadOnly(true); valMod->setAlignment(Qt::AlignCenter); valMod->setPlaceholderText("---");
+        ClickableLineEdit* valKey = new ClickableLineEdit(); valKey->setMinimumWidth(180); valKey->setReadOnly(true); valKey->setAlignment(Qt::AlignCenter); valKey->setPlaceholderText("CLIQUE PARA MAPEAR");
+        QPushButton* clearBtn = new QPushButton("X"); clearBtn->setFixedSize(28, 28); clearBtn->setStyleSheet("QPushButton { background-color: #444; border-radius: 14px; font-weight: bold; } QPushButton:hover { background-color: #8B0000; }");
+        
+        rowLayout->addWidget(lblBtn); 
+        rowLayout->addWidget(valMod); 
+        rowLayout->addWidget(valKey); 
+        rowLayout->addWidget(clearBtn);
+        
         scrollLayout->addLayout(rowLayout);
         entryWidgets[btn] = qMakePair(valMod, valKey);
         connect(valMod, &ClickableLineEdit::clicked, [this, btn, valMod](QMouseEvent* e) { handleMapClick(btn, 0, valMod, e); });
@@ -290,15 +300,15 @@ void MainWindow::clearRow(const QString& btn) {
 }
 
 void MainWindow::handleMapClick(const QString& btn, int index, ClickableLineEdit* entry, QMouseEvent* event) {
-    if (capturing && currentEntryWidget) {
-        currentEntryWidget->setStyleSheet("background-color: #343638;");
-        qApp->removeEventFilter(this);
+    if (capturing) {
+        cancelCapture();
     }
     capturing = true;
+    justStarted = true;
     currentBtn = btn;
     currentIndex = index;
     currentEntryWidget = entry;
-    currentEntryWidget->setStyleSheet("background-color: #8B0000;");
+    currentEntryWidget->setStyleSheet("background-color: #8B0000; border: 1px solid #FF4500; color: white;");
     qApp->installEventFilter(this);
 }
 
@@ -320,13 +330,31 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
             }
             finishCapture(keyName);
             return true;
-        } else if (event->type() == QEvent::MouseButtonPress && currentIndex == 1) {
-             QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-             QString mouseBtn;
-             if (mouseEvent->button() == Qt::LeftButton) mouseBtn = "MOUSE_LEFT";
-             else if (mouseEvent->button() == Qt::MiddleButton) mouseBtn = "MOUSE_MIDDLE";
-             else if (mouseEvent->button() == Qt::RightButton) mouseBtn = "MOUSE_RIGHT";
-             if (!mouseBtn.isEmpty()) { finishCapture(mouseBtn); return true; }
+        } else if (event->type() == QEvent::MouseButtonPress) {
+            if (justStarted) {
+                justStarted = false;
+                return false;
+            }
+
+            // Check if the click is on the current widget or any of its children
+            QWidget* clickedWidget = qobject_cast<QWidget*>(obj);
+            bool isTarget = (obj == currentEntryWidget);
+            if (!isTarget && clickedWidget && currentEntryWidget) {
+                isTarget = currentEntryWidget->isAncestorOf(clickedWidget);
+            }
+
+            if (currentIndex == 1 && isTarget) {
+                QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+                QString mouseBtn;
+                if (mouseEvent->button() == Qt::LeftButton) mouseBtn = "MOUSE_LEFT";
+                else if (mouseEvent->button() == Qt::MiddleButton) mouseBtn = "MOUSE_MIDDLE";
+                else if (mouseEvent->button() == Qt::RightButton) mouseBtn = "MOUSE_RIGHT";
+                if (!mouseBtn.isEmpty()) { finishCapture(mouseBtn); return true; }
+            } else if (!isTarget) {
+                // Clicked outside the target area: cancel capture
+                cancelCapture();
+                return false;
+            }
         }
     }
     return QWidget::eventFilter(obj, event);
@@ -344,10 +372,19 @@ void MainWindow::finishCapture(const QString& keyName) {
     }
 
     currentEntryWidget->setText(finalKey.toUpper());
-    currentEntryWidget->setStyleSheet("background-color: #343638;");
+    currentEntryWidget->setStyleSheet(""); // Reset to default CSS
     Config::MAP[currentBtn.toStdString()][currentIndex] = finalKey.toStdString();
     std::cout << "[LOG] Mapeamento: " << currentBtn.toStdString() << "[" << currentIndex << "] = " << finalKey.toStdString() << std::endl;
+    cancelCapture();
+}
+
+void MainWindow::cancelCapture() {
+    if (currentEntryWidget) {
+        currentEntryWidget->setStyleSheet(""); // Reset to default CSS
+    }
     capturing = false;
+    currentBtn = "";
+    currentIndex = -1;
     currentEntryWidget = nullptr;
     qApp->removeEventFilter(this);
 }
