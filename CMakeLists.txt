@@ -29,6 +29,7 @@ set(SOURCES
     src/GamepadHandler.cpp
     src/InterceptionWrapper.cpp
     src/MainWindow.cpp
+    resources.rc
 )
 
 # WIN32 creates a Windows subsystem executable (no console window by default)
@@ -77,6 +78,16 @@ if(WIN32)
                 "${INTERCEPTION_DLL}"
                 "$<TARGET_FILE_DIR:TibiaGamepad>/interception.dll"
             COMMENT "Copying interception.dll to build directory..."
+        )
+    endif()
+
+    # Copy icon.png for runtime loading
+    if(EXISTS "${CMAKE_SOURCE_DIR}/icon.ico")
+        add_custom_command(TARGET TibiaGamepad POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CMAKE_SOURCE_DIR}/icon.ico"
+                "$<TARGET_FILE_DIR:TibiaGamepad>/icon.ico"
+            COMMENT "Copying icon.ico to build directory..."
         )
     endif()
 endif()
