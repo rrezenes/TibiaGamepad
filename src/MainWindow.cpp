@@ -14,6 +14,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QFrame>
+#include <QIcon>
 #include <iostream>
 
 ClickableLineEdit::ClickableLineEdit(QWidget* parent) : QLineEdit(parent) {
@@ -27,6 +28,7 @@ void ClickableLineEdit::mousePressEvent(QMouseEvent* event) {
 
 MainWindow::MainWindow(QWidget* parent) : QWidget(parent) {
     setWindowTitle("TibiaGamepad");
+    setWindowIcon(QIcon("icon.ico"));
     resize(680, 750);
     
     setStyleSheet(R"(
