@@ -1,70 +1,66 @@
-# 🎮 TibiaGamepad
+# 🎮 TibiaGamepad (C++ Native)
 
-O **TibiaGamepad** é um emulador de entrada de baixo nível projetado especificamente para permitir que jogadores de Tibia utilizem controles de Xbox (ou compatíveis com XInput) para movimentação e execução de hotkeys. 
+O **TibiaGamepad** é um emulador de entrada de baixo nível projetado especificamente para permitir que jogadores de Tibia utilizem controles de Xbox (ou compatíveis com XInput) para movimentação e execução de hotkeys.
 
-Diferente de emuladores comuns, ele utiliza o driver **Interception**, o que garante que as entradas sejam reconhecidas pelo jogo mesmo em modo BattleEye, simulando um teclado/mouse físico real.
+Feito em **C++ Nativo (Qt6)** para maior performance, estabilidade e menor pegada de memória.
+
+Diferente de emuladores comuns, ele utiliza o driver **Interception**, o que garante que as entradas sejam reconhecidas pelo jogo, simulando um teclado/mouse físico real em nível de kernel.
 
 ---
 
 ## ✨ Funcionalidades Principais
 
-* **Movimentação Heartbeat (Restaurada)**: Lógica de repetição forçada (30ms) que garante que o personagem continue andando suavemente e sem interrupções enquanto o analógico estiver pressionado.
-* **Mapeamento Híbrido**: Suporte total a teclas de teclado, combinações com modificadores (Ctrl, Alt, Shift) e botões do mouse (Esquerdo, Direito e Central).
-* **Captura Inteligente**: Clique no campo para capturar a tecla ou o botão do mouse instantaneamente. Use `Backspace` ou o botão `X` para limpar.
-* **Auto-Admin**: O programa agora solicita automaticamente os privilégios de Administrador ao ser aberto, requisito obrigatório para o driver funcionar.
-* **UI Auto-Sync**: O perfil salvo (`config_tibia.json`) é carregado e exibido automaticamente na interface assim que o programa é iniciado.
-* **Console de Logs Otimizado**: Visualize em tempo real a pressão dos analógicos (com trava de 0.5s para não travar o emulador), gatilhos e o status das hotkeys disparadas.
+*   **Movimentação Heartbeat**: Lógica de repetição forçada (30ms) que garante que o personagem continue andando suavemente e sem interrupções enquanto o analógico estiver pressionado.
+*   **Mapeamento Híbrido**: Suporte total a teclas de teclado, combinações com modificadores (Ctrl, Alt, Shift) e botões do mouse (Esquerdo, Direito e Central).
+*   **Captura Inteligente**: Clique no campo para capturar a tecla ou o botão do mouse instantaneamente.
+*   **Passthrough de Baixo Nível**: Implementação de loop de processamento do Interception que evita o travamento do teclado/mouse enquanto o emulador está ativo.
+*   **Reinicialização de Segurança**: Botão dedicado para resetar instâncias do driver em caso de anomalia.
+*   **Auto-Admin**: Solicita automaticamente privilégios de Administrador, requisito obrigatório para o driver Interception.
 
 ---
 
-## 🛠️ Requisitos de Instalação
+## 🛠️ Requisitos e Compilação
 
 ### 1. Driver Interception (Obrigatório)
-Para que o código funcione, você deve instalar o driver que permite a emulação de hardware de baixo nível:
-1. Baixe o Interception Driver no GitHub oficial.
-2. Abra o terminal como Administrador na pasta "command line installer".
-3. Execute: `install-interception.exe /install`.
-4. **REINICIE o seu computador.**
+1. Instale o driver Interception via instalador oficial.
+2. Execute: `install-interception.exe /install` como Administrador.
+3. **REINICIE o computador.**
 
-### 2. Dependências do Python
-Instale as bibliotecas necessárias via pip:
-- `pip install interception`
-- `pip install XInput`
-- `pip install customtkinter`
-- `pip install pynput`
+### 2. Compilação (Windows + Qt6)
+Para compilar o projeto, use o PowerShell na pasta raiz:
+
+```powershell
+# 1. Configurar
+cmake -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH="C:\Qt\6.10.2\msvc2022_64"
+
+# 2. Compilar
+cmake --build build --config Release
+```
+
+O executável e todas as DLLs necessárias (Qt e Interception) serão gerados automaticamente em `build/Release/`.
 
 ---
 
 ## 🚀 Como Usar
 
-1. **Executar**: Inicie o `main.py` (ou o executável gerado). Ele pedirá permissão de Administrador automaticamente.
-2. **Mapeamento**:
-    * Clique na aba **Mapeamento**.
-    * Clique uma vez no campo desejado (ele ficará vermelho indicando modo de escuta).
-    * Pressione uma tecla no teclado ou clique com o botão do mouse (Esquerdo/Direito/Meio) no campo para salvar.
-3. **Ativação**:
-    * Na aba **Geral**, clique em **ATIVAR EMULADOR**.
-    * O status mudará para vermelho e o log confirmará a ativação. O analógico e os botões já estarão funcionando no jogo.
+1.  **Executar**: Inicie o `TibiaGamepad.exe` como Administrador.
+2.  **Mapeamento**:
+    *   Na aba **Mapeamento**, clique no campo que deseja configurar (ele ficará vermelho).
+    *   Pressione a tecla ou botão do mouse desejado.
+3.  **Ativação**:
+    *   Na aba **Geral**, clique em **ATIVAR EMULADOR**.
+    *   Use o analógico configurado para movimentar o mouse ou o personagem.
 
 ---
 
-## 📖 Estrutura da Interface
+## 📖 Estrutura do Projeto
 
-| Aba | Descrição |
-| :--- | :--- |
-| **Geral** | Ativação do emulador, escolha do analógico de movimento do mouse e ajuste de sensibilidade. |
-| **Mapeamento** | Configuração de todos os botões físicos para Hotkeys ou Cliques de Mouse. |
-| **Logs** | Depuração em tempo real de movimentos, pressão de botões, salvamentos e erros. |
+*   `src/`: Código fonte (`.cpp`).
+*   `include/`: Cabeçalhos (`.h`).
+*   `lib/`: Bibliotecas estáticas do Interceptor.
+*   `interception_ext/`: SDK do Interception.
+*   `config_tibia.json`: Arquivo de persistência de configurações.
 
----
-
-## 💻 Compilando para Executável (.exe)
-
-Se você deseja gerar um arquivo único para rodar sem precisar do Python aberto no terminal, instale o PyInstaller (`pip install pyinstaller`) e execute o comando abaixo:
-
-```bash
-pyinstaller --noconsole --onefile --uac-admin --name "TibiaGamepad_v1.1.7" main.py
-```
 ---
 
 ## ⚠️ Aviso Legal

@@ -1,32 +1,33 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
+# C++ Build Artifacts
 build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+bin/
+obj/
+x64/
+out/
+CMakeCache.txt
+CMakeFiles/
+CMakeSettings.json
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.dir/
+*.log
+*.tlog
+*.lastbuildstate
+*.recipe
+*.ilk
+*.pdb
+*.exe
+*.dll
+*.lib
+*.exp
 
-# Ambientes Virtuais
-.venv
-venv/
-ENV/
-
-# IDEs (VS Code / PyCharm)
+# IDEs
 .vscode/
 .idea/
+.vs/
+
+# System
+Thumbs.db
+Desktop.ini
